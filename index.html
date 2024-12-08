@@ -603,6 +603,259 @@ footer {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+        // Initialize Vanta.js clouds effect
+VANTA.CLOUDS({
+    el: "#vanta-background",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    skyColor: 0x68829e,
+    cloudColor: 0xffffff,
+    cloudShadowColor: 0x0,
+    sunColor: 0xff9919,
+    sunGlareColor: 0xff6633,
+    sunlightColor: 0xff9933
+});
+
+// Fetch movie data and populate sections
+const movieData = {
+    current: [
+        { title: "The Avengers: Endgame", image: "https://via.placeholder.com/300x450", rating: 9.2, director: "Anthony Russo, Joe Russo", year: 2019, genre: ["Action", "Adventure", "Drama"], plot: "After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.", cast: ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo"], duration: "3h 1min", trailer: "https://www.youtube.com/watch?v=TcMBFSGVi1c", play: "movie1.html" },
+        { title: "Inception", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "Christopher Nolan", year: 2010, genre: ["Action", "Adventure", "Sci-Fi"], plot: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"], duration: "2h 28min", trailer: "https://www.youtube.com/watch?v=YoHD9XEInc0", play: "movie2.html" },
+        // ... (add more movies)
+    ],
+    upcoming: [
+        { title: "Dune: Part Two", image: "https://via.placeholder.com/300x450", releaseDate: "October 20, 2023", director: "Denis Villeneuve", plot: "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.", trailer: "https://www.youtube.com/watch?v=dummy-dune-2" },
+        { title: "The Marvels", image: "https://via.placeholder.com/300x450", releaseDate: "November 10, 2023", director: "Nia DaCosta", plot: "Carol Danvers gets her powers entangled with those of Kamala Khan and Monica Rambeau, forcing them to work together to save the universe.", trailer: "https://www.youtube.com/watch?v=dummy-marvels" },
+        // ... (add more movies)
+    ],
+    topRated: [
+        { title: "The Shawshank Redemption", image: "https://via.placeholder.com/300x450", rating: 9.3, director: "Frank Darabont", year: 1994, genre: ["Drama"], plot: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", cast: ["Tim Robbins", "Morgan Freeman"], duration: "2h 22min", trailer: "https://www.youtube.com/watch?v=6hB3S9bIaco", play: "index.html" },
+        { title: "The Godfather", image: "https://via.placeholder.com/300x450", rating: 9.2, director: "Francis Ford Coppola", year: 1972, genre: ["Crime", "Drama"], plot: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.", cast: ["Marlon Brando", "Al Pacino"], duration: "2h 55min", trailer: "https://www.youtube.com/watch?v=sY1S34973zA", play: "movie2.html" },
+        // ... (add more movies)
+    ]
+};
+
+// Lazy loading function
+const lazyLoad = (target) => {
+    const io = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                const src = img.getAttribute('data-lazy');
+                img.setAttribute('src', src);
+                img.classList.add('fade');
+                observer.disconnect();
+            }
+        });
+    });
+    io.observe(target);
+};
+
+// Populate current movies swiper
+const populateSwiper = () => {
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+    movieData.current.forEach(movie => {
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+        slide.innerHTML = `
+            <img data-lazy="${movie.image}" alt="${movie.title}">
+            <div class="movie-info">
+                <h3 class="movie-title">${movie.title}</h3>
+                <div class="movie-rating">★ ${movie.rating.toFixed(1)}</div>
+                <button class="movie-button" data-movie='${JSON.stringify(movie)}'>Details</button>
+            </div>
+        `;
+        swiperWrapper.appendChild(slide);
+        lazyLoad(slide.querySelector('img'));
+    });
+};
+
+// Initialize Swiper
+const initSwiper = () => {
+    return new Swiper('.swiper-container', {
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        initialSlide: 2,
+        coverflowEffect: {
+            rotate: 0,
+            stretch: 0,
+            depth: 100,
+            modifier: 2.5,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+};
+
+// Populate movie grids
+const populateMovieGrid = (selector, movies) => {
+    const container = document.querySelector(selector);
+    movies.forEach(movie => {
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        card.innerHTML = `
+            <img data-lazy="${movie.image}" alt="${movie.title}">
+            <div class="movie-card-info">
+                <h3 class="movie-card-title">${movie.title}</h3>
+                ${movie.rating ? `<div class="movie-card-rating">★ ${movie.rating.toFixed(1)}</div>` : ''}
+                ${movie.releaseDate ? `<p>Release Date: ${movie.releaseDate}</p>` : ''}
+            </div>
+        `;
+        card.addEventListener('click', () => openPopup(movie));
+        container.appendChild(card);
+        lazyLoad(card.querySelector('img'));
+    });
+};
+
+// Movie details popup functionality
+const movieDetails = document.getElementById('movie-details');
+const closePopup = document.querySelector('.close-button');
+const popupTitle = document.getElementById('movie-title');
+const popupDirector = document.getElementById('movie-director');
+const popupYear = document.getElementById('movie-year');
+const popupGenre = document.getElementById('movie-genre');
+const popupPlot = document.getElementById('movie-plot');
+const popupCast = document.getElementById('movie-cast');
+const popupRating = document.getElementById('movie-rating');
+const popupDuration = document.getElementById('movie-duration');
+const popupPlay = document.getElementById('movie-play');
+const popupTrailer = document.getElementById('movie-trailer');
+
+const openPopup = (movie) => {
+    popupTitle.textContent = movie.title;
+    popupDirector.textContent = `Director: ${movie.director}`;
+    popupYear.textContent = `Year: ${movie.year || 'TBA'}`;
+    popupGenre.textContent = `Genre: ${movie.genre ? movie.genre.join(', ') : 'N/A'}`;
+    popupPlot.textContent = `Plot: ${movie.plot}`;
+    popupCast.textContent = `Cast: ${movie.cast ? movie.cast.join(', ') : 'N/A'}`;
+    popupRating.textContent = `Rating: ${movie.rating || 'N/A'}`;
+    popupDuration.textContent = `Duration: ${movie.duration || 'N/A'}`;
+    
+    if (movie.play) {
+        popupPlay.href = movie.play;
+        popupPlay.style.display = 'inline-block';
+    } else {
+        popupPlay.style.display = 'none';
+    }
+    
+    if (movie.trailer) {
+        popupTrailer.href = movie.trailer;
+        popupTrailer.style.display = 'inline-block';
+    } else {
+        popupTrailer.style.display = 'none';
+    }
+    
+    movieDetails.style.display = 'block';
+};
+
+closePopup.addEventListener('click', () => {
+    movieDetails.style.display = 'none';
+});
+
+// Animate title
+const animateTitle = () => {
+    anime({
+        targets: '.title',
+        translateY: [-50, 0],
+        opacity: [0, 1],
+        easing: 'easeOutExpo',
+        duration: 1500
+    });
+};
+
+// Add glowing effect to active slide
+const addGlowingEffect = () => {
+    gsap.to('.swiper-slide-active', {
+        boxShadow: '0 0 20px rgba(255, 255, 255, 0.6)',
+        duration: 1,
+        yoyo: true,
+        repeat: -1
+    });
+};
+
+// Mobile menu functionality
+const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+const mobileMenu = document.querySelector('.mobile-menu');
+
+mobileMenuToggle.addEventListener('click', () => {
+    mobileMenuToggle.classList.toggle('active');
+    mobileMenu.classList.toggle('active');
+});
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', (event) => {
+    if (!mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+        mobileMenuToggle.classList.remove('active');
+        mobileMenu.classList.remove('active');
+    }
+});
+
+// Search functionality
+const searchInput = document.getElementById('search-input');
+const searchButton = document.getElementById('search-button');
+
+const performSearch = _.debounce(() => {
+    const searchTerm = searchInput.value.toLowerCase();
+    const movieSlides = document.querySelectorAll('.swiper-slide');
+
+    movieSlides.forEach(slide => {
+        const movieTitle = slide.querySelector('.movie-title').textContent.toLowerCase();
+        if (movieTitle.includes(searchTerm)) {
+            slide.style.display = 'block';
+        } else {
+            slide.style.display = 'none';
+        }
+    });
+
+    swiper.update();
+}, 300);
+
+searchButton.addEventListener('click', performSearch);
+searchInput.addEventListener('input', performSearch);
+
+// Newsletter form submission
+const newsletterForm = document.getElementById('newsletter-form');
+newsletterForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = newsletterForm.querySelector('input[type="email"]').value;
+    alert(`Thank you for subscribing with email: ${email}`);
+    newsletterForm.reset();
+});
+
+// Initialize the application
+const init = () => {
+    populateSwiper();
+    const swiper = initSwiper();
+    populateMovieGrid('#upcoming-movies .movie-grid', movieData.upcoming);
+    populateMovieGrid('#top-rated .movie-grid', movieData.topRated);
+    animateTitle();
+    addGlowingEffect();
+
+    // Ensure proper initialization on mobile devices
+    window.addEventListener('load', () => {
+        swiper.update();
+    });
+
+    // Update swiper on window resize
+    window.addEventListener('resize', _.debounce(() => {
+        swiper.update();
+    }, 150));
+};
+
+init();
+
+
+    </script>
 </body>
 </html>
