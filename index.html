@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineMagic - Your Ultimate Movie Destination</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #ff4081;
+            --secondary-color: #3f51b5;
+            --background-color: #121212;
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        #vanta-background {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .title {
+            text-align: center;
+            font-size: 3rem;
+            margin: 100px 0 2rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .swiper-container {
+            width: 100%;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .swiper-slide {
+            background-position: center;
+            background-size: cover;
+            width: 300px;
+            height: 450px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        .swiper-slide:hover {
+            transform: scale(1.05);
+        }
+
+        .swiper-slide-active {
+            transform: scale(1.1);
+        }
+
+        .movie-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            transition: transform 0.3s ease;
+            transform: translateY(100%);
+        }
+
+        .swiper-slide:hover .movie-info {
+            transform: translateY(0);
+        }
+
+        .movie-title {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .movie-rating {
+            font-size: 1rem;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .swiper-button-next, .swiper-button-prev {
+            color: #fff;
+        }
+
+        .swiper-pagination-bullet {
+            background: #fff;
+            opacity: 0.5;
+        }
+
+        .swiper-pagination-bullet-active {
+            opacity: 1;
+        }
+
+        .movie-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .movie-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
+        }
+
+        .movie-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transition: all 0.4s ease;
+        }
+
+        .movie-button:hover::before {
+            left: 100%;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 20px;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .mobile-menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #fff;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: right 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 24px;
+            margin: 20px 0;
+            transition: color 0.3s ease;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .navbar-content {
+                justify-content: space-between;
+            }
+        }
+
+        #movie-details {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 20px;
+            z-index: 2000;
+            display: none;
+        }
+
+        #movie-details h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        #movie-details p {
+            margin-bottom: 10px;
+        }
+
+        #movie-details .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .movie-section {
+            margin-bottom: 50px;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .movie-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .movie-card-info {
+            padding: 10px;
+        }
+
+        .movie-card-title {
+            font-size: 1rem;
+            color: #121212;
+            margin-bottom: 5px;
+        }
+
+        .movie-card-rating {
+            font-size: 0.9rem;
+            color: #ffd700;
+        }
+
+        #search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #search-input {
+            width: 300px;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+        }
+
+        #search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        #search-button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #search-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        #newsletter-form {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+
+        #newsletter-form h3 {
+            margin-bottom: 10px;
+        }
+
+        #newsletter-form input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #newsletter-form button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #newsletter-form button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px 0;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .social-icons {
+            margin-bottom: 10px;
+        }
+
+        .social-icons a {
+            color: #fff;
+            font-size: 24px;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 600px) {
+            .title {
+                font-size: 2rem;
+            }
+
+            .swiper-slide {
+                width: 250px;
+                height: 375px;
+            }
+
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            #search-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #search-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            #search-button {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="vanta-background"></div>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html" class="logo">CineMagic</a>
+            <div class="nav-links">
+                <a href="#current-movies">Current Movies</a>
+                <a href="#upcoming-movies">Upcoming Movies</a>
+                <a href="#top-rated">Top Rated</a>
+                <a href="#newsletter">Newsletter</a>
+            </div>
+            <button class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+    <div class="mobile-menu">
+        <a href="#current-movies">Current Movies</a>
+        <a href="#upcoming-movies">Upcoming Movies</a>
+        <a href="#top-rated">Top Rated</a>
+        <a href="#newsletter">Newsletter</a>
+    </div>
+    <div class="container">
+        <section id="current-movies" class="movie-section">
+            <h1 class="title">Current Movies</h1>
+            <div id="search-container">
+                <input type="text" id="search-input" placeholder="Search movies...">
+                <button id="search-button">Search</button>
+            </div>
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <!-- Movie slides will be dynamically added here -->
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </section>
+
+        <section id="upcoming-movies" class="movie-section">
+            <h2 class="title" style="color: #121212;">Upcoming Movies</h2>
+            <div class="movie-grid">
+                <!-- Upcoming movie cards will be dynamically added here -->
+            </div>
+        </section>
+
+        <section id="top-rated" class="movie-section">
+            <h2 class="title" style="color: #121212;">Top Rated Movies</h2>
+            <div class="movie-grid">
+                <!-- Top rated movie cards will be dynamically added here -->
+            </div>
+        </section>
+
+        <section id="newsletter">
+            <form id="newsletter-form">
+                <h3 style="color: black;">Subscribe to Our Newsletter</h3>
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+    </div>
+    <div id="movie-details">
+        <button class="close-button">&times;</button>
+        <h2 id="movie-title"></h2>
+        <p id="movie-director"></p>
+        <p id="movie-year"></p>
+        <p id="movie-genre"></p>
+        <p id="movie-plot"></p>
+        <p id="movie-cast"></p>
+        <p id="movie-rating"></p>
+        <p id="movie-duration"></p>
+        <div class="popup-buttons">
+            <a id="movie-play" href="#" target="_blank" class="movie-button">Play</a>
+            <a id="movie-trailer" href="#" target="_blank" class="movie-button">Watch Trailer</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="social-icons">
+            <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <p>&copy; 2023 CineMagic. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+        // Initialize Vanta.js clouds effect
+        VANTA.CLOUDS({
+            el: "#vanta-background",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            skyColor: 0x68829e,
+            cloudColor: 0xffffff,
+            cloudShadowColor: 0x0,
+            sunColor: 0xff9919,
+            sunGlareColor: 0xff6633,
+            sunlightColor: 0xff9933
+        })
+
+        // Fetch movie data and populate sections
+        const movieData = {
+            current: [
+                { title: "The Avengers: Endgame", image: "https://via.placeholder.com/300x450", rating: 9.2, director: "Anthony Russo, Joe Russo", year: 2019, genre: ["Action", "Adventure", "Drama"], plot: "After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.", cast: ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo"], duration: "3h 1min", trailer: "https://www.youtube.com/watch?v=TcMBFSGVi1c", play: "movie1.html" },
+                { title: "Inception", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "Christopher Nolan", year: 2010, genre: ["Action", "Adventure", "Sci-Fi"], plot: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"], duration: "2h 28min", trailer: "https://www.youtube.com/watch?v=YoHD9XEInc0", play: "movie2.html" },
+                { title: "The Shawshank Redemption", image: "https://via.placeholder.com/300x450", rating: 9.3, director: "Frank Darabont", year: 1994, genre: ["Drama"], plot: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", cast: ["Tim Robbins", "Morgan Freeman", "Bob Gunton"], duration: "2h 22min", trailer: "https://www.youtube.com/watch?v=6hB3S9bIaco", play: "movie3.html" },
+                { title: "Pulp Fiction", image: "https://via.placeholder.com/300x450", rating: 8.9, director: "Quentin Tarantino", year: 1994, genre: ["Crime", "Drama"], plot: "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.", cast: ["John Travolta", "Uma Thurman", "Samuel L. Jackson"], duration: "2h 34min", trailer: "https://www.youtube.com/watch?v=s7EdQ4FqbhY", play: "movie4.html" },
+                { title: "The Dark Knight", image: "https://via.placeholder.com/300x450", rating: 9.0, director: "Christopher Nolan", year: 2008, genre: ["Action", "Crime", "Drama"], plot: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.", cast: ["Christian Bale", "Heath Ledger", "Aaron Eckhart"], duration: "2h 32min", trailer: "https://www.youtube.com/watch?v=EXeTwQWrcwY", play: "movie5.html" },
+                { title: "Forrest Gump", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "Robert Zemeckis", year: 1994, genre: ["Drama", "Romance"], plot: "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75, whose only desire is to be reunited with his childhood sweetheart.", cast: ["Tom Hanks", "Robin Wright", "Gary Sinise"], duration: "2h 22min", trailer: "https://www.youtube.com/watch?v=bLvqoHBptjg", play: "movie6.html" },
+                { title: "The Matrix", image: "https://via.placeholder.com/300x450", rating: 8.7, director: "Lana Wachowski, Lilly Wachowski", year: 1999, genre: ["Action", "Sci-Fi"], plot: "A computer programmer discovers that reality as he knows it is a simulation created by machines to subjugate humanity. He joins a rebellion to break free from the system.", cast: ["Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss"], duration: "2h 16min", trailer: "https://www.youtube.com/watch?v=m8e-FF8MsqU", play: "movie7.html" },
+                { title: "Goodfellas", image: "https://via.placeholder.com/300x450", rating: 8.7, director: "Martin Scorsese", year: 1990, genre: ["Biography", "Crime", "Drama"], plot: "The story of Henry Hill and his life in the mob, covering his relationship with his wife Karen Hill and his mob partners Jimmy Conway and Tommy DeVito in the Italian-American crime syndicate.", cast: ["Robert De Niro", "Ray Liotta", "Joe Pesci"], duration: "2h 26min", trailer: "https://www.youtube.com/watch?v=qo5jJpHtI1Y", play: "movie8.html" },
+                { title: "Schindler's List", image: "https://via.placeholder.com/300x450", rating: 8.9, director: "Steven Spielberg", year: 1993, genre: ["Biography", "Drama", "History"], plot: "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.", cast: ["Liam Neeson", "Ralph Fiennes", "Ben Kingsley"], duration: "3h 15min", trailer: "https://www.youtube.com/watch?v=gG22XNhtnoY", play: "movie9.html" },
+                { title: "Fight Club", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "David Fincher", year: 1999, genre: ["Drama"], plot: "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more.", cast: ["Brad Pitt", "Edward Norton", "Helena Bonham Carter"], duration: "2h 19min", trailer: "https://www.youtube.com/watch?v=qtRKdVHc-cE", play: "movie10.html" }
+            ],
+            upcoming: [
+                { title: "Dune: Part Two", image: "https://via.placeholder.com/300x450", releaseDate: "October 20, 2023", director: "Denis Villeneuve", plot: "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.", trailer: "https://www.youtube.com/watch?v=dummy-dune-2" },
+                { title: "The Marvels", image: "https://via.placeholder.com/300x450", releaseDate: "November 10, 2023", director: "Nia DaCosta", plot: "Carol Danvers gets her powers entangled with those of Kamala Khan and Monica Rambeau, forcing them to work together to save the universe.", trailer: "https://www.youtube.com/watch?v=dummy-marvels" },
+                { title: "Killers of the Flower Moon", image: "https://via.placeholder.com/300x450", releaseDate: "October 6, 2023", director: "Martin Scorsese", plot: "Members of the Osage tribe in the United States are murdered under mysterious circumstances in the 1920s sparking a major F.B.I. investigation involving J. Edgar Hoover.", trailer: "https://www.youtube.com/watch?v=dummy-killers" },
+                { title: "Oppenheimer", image: "https://via.placeholder.com/300x450", releaseDate: "July 21, 2023", director: "Christopher Nolan", plot: "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.", trailer: "https://www.youtube.com/watch?v=dummy-oppenheimer" },
+                { title: "Mission: Impossible - Dead Reckoning Part One", image: "https://via.placeholder.com/300x450", releaseDate: "July 14, 2023", director: "Christopher McQuarrie", plot: "Ethan Hunt and his IMF team embark on their most dangerous mission yet: To track down a terrifying new weapon that threatens all of humanity before it falls into the wrong hands.", trailer: "https://www.youtube.com/watch?v=dummy-mission-impossible" },
+                { title: "Guardians of the Galaxy Vol. 3", image: "https://via.placeholder.com/300x450", releaseDate: "May 5, 2023", director: "James Gunn", plot: "Still reeling from the loss of Gamora, Peter Quill rallies his team to defend the universe and one of their own - a mission that could mean the end of the Guardians if not successful.", trailer: "https://www.youtube.com/watch?v=dummy-guardians-3" },
+                { title: "Aquaman and the Lost Kingdom", image: "https://via.placeholder.com/300x450", releaseDate: "December 20, 2023", director: "James Wan", plot: "Aquaman forges an uneasy alliance with an unlikely ally to save Atlantis and the rest of the planet.", trailer: "https://www.youtube.com/watch?v=dummy-aquaman-2" },
+                { title: "The Flash", image: "https://via.placeholder.com/300x450", releaseDate: "June 16, 2023", director: "Andy Muschietti", plot: "Barry Allen uses his super speed to change the past, but his attempt to save his family creates a world without super heroes, forcing him to race for his life in order to save the future.", trailer: "https://www.youtube.com/watch?v=dummy-flash" },
+                { title: "Spider-Man: Across the Spider-Verse", image: "https://via.placeholder.com/300x450", releaseDate: "June 2, 2023", director: "Joaquim Dos Santos, Kemp Powers, Justin K. Thompson", plot: "Miles Morales returns for the next chapter of the Oscar®-winning Spider-Verse saga, an epic adventure that will transport Brooklyn's full-time, friendly neighborhood Spider-Man across the Multiverse to join forces with Gwen Stacy and a new team of Spider-People to face off with a villain more powerful than anything they have ever encountered.", trailer: "https://www.youtube.com/watch?v=dummy-spiderverse-2" },
+                { title: "Wonka", image: "https://via.placeholder.com/300x450", releaseDate: "December 15, 2023", director: "Paul King", plot: "An origin story that explores the vivid, mythical beginnings of the imaginative young inventor before he becomes the renowned scrumdiddlyumptious Mozart of chocolate.", trailer: "https://www.youtube.com/watch?v=dummy-wonka" }
+            ],
+            topRated: [
+                { title: "The Shawshank Redemption", image: "https://via.placeholder.com/300x450", rating: 9.3, director: "Frank Darabont", year: 1994, genre: ["Drama"], plot: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", cast: ["Tim Robbins", "Morgan Freeman"], duration: "2h 22min", trailer: "https://www.youtube.com/watch?v=6hB3S9bIaco", play: "index.html" },
+                { title: "The Godfather", image: "https://via.placeholder.com/300x450", rating: 9.2, director: "Francis Ford Coppola", year: 1972, genre: ["Crime", "Drama"], plot: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.", cast: ["Marlon Brando", "Al Pacino"], duration: "2h 55min", trailer: "https://www.youtube.com/watch?v=sY1S34973zA", play: "movie2.html" },
+                { title: "The Dark Knight", image: "https://via.placeholder.com/300x450", rating: 9.0, director: "Christopher Nolan", year: 2008, genre: ["Action", "Crime", "Drama"], plot: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.", cast: ["Christian Bale", "Heath Ledger"], duration: "2h 32min", trailer: "https://www.youtube.com/watch?v=EXeTwQWrcwY", play: "movie3.html" },
+                { title: "12 Angry Men", image: "https://via.placeholder.com/300x450", rating: 9.0, director: "Sidney Lumet", year: 1957, genre: ["Crime", "Drama"], plot: "A jury holdout attempts to prevent a miscarriage of justice by forcing his colleagues to reconsider the evidence.", cast: ["Henry Fonda", "Lee J. Cobb"], duration: "1h 36min", trailer: "https://www.youtube.com/watch?v=_13J_9B5jEk", play: "movie4.html" },
+                { title: "Schindler's List", image: "https://via.placeholder.com/300x450", rating: 8.9, director: "Steven Spielberg", year: 1993, genre: ["Biography", "Drama", "History"], plot: "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.", cast: ["Liam Neeson", "Ralph Fiennes"], duration: "3h 15min", trailer: "https://www.youtube.com/watch?v=gG22XNhtnoY", play: "movie5.html" },
+                { title: "The Lord of the Rings: The Return of the King", image: "https://via.placeholder.com/300x450", rating: 8.9, director: "Peter Jackson", year: 2003, genre: ["Action", "Adventure", "Drama"], plot: "Gandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.", cast: ["Elijah Wood", "Viggo Mortensen"], duration: "3h 21min", trailer: "https://www.youtube.com/watch?v=r5X-hFf6Bwo", play: "movie6.html" },
+                { title: "Pulp Fiction", image: "https://via.placeholder.com/300x450", rating: 8.9, director: "Quentin Tarantino", year: 1994, genre: ["Crime", "Drama"], plot: "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.", cast: ["John Travolta", "Uma Thurman"], duration: "2h 34min", trailer: "https://www.youtube.com/watch?v=s7EdQ4FqbhY", play: "movie7.html" },
+                { title: "The Good, the Bad and the Ugly", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "Sergio Leone", year: 1966, genre: ["Western"], plot: "A bounty hunting scam joins two men in an uneasy alliance against a third in a race to find a fortune in gold buried in a remote cemetery.", cast: ["Clint Eastwood", "Eli Wallach"], duration: "2h 58min", trailer: "https://www.youtube.com/watch?v=WCN5JJY_wiA", play: "movie8.html" },
+                { title: "Forrest Gump", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "Robert Zemeckis", year: 1994, genre: ["Drama", "Romance"], plot: "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75, whose only desire is to be reunited with his childhood sweetheart.", cast: ["Tom Hanks", "Robin Wright"], duration: "2h 22min", trailer: "https://www.youtube.com/watch?v=bLvqoHBptjg", play: "movie9.html" },
+                { title: "Inception", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "Christopher Nolan", year: 2010, genre: ["Action", "Adventure", "Sci-Fi"], plot: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt"], duration: "2h 28min", trailer: "https://www.youtube.com/watch?v=YoHD9XEInc0", play: "movie10.html" }
+            ]
+        };
+
+        // Populate current movies swiper
+        const swiperWrapper = document.querySelector('.swiper-wrapper');
+        movieData.current.forEach(movie => {
+            const slide = document.createElement('div');
+            slide.className = 'swiper-slide';
+            slide.style.backgroundImage = `url(${movie.image})`;
+            
+            const info = document.createElement('div');
+            info.className = 'movie-info';
+            info.innerHTML = `
+                <h3 class="movie-title">${movie.title}</h3>
+                <div class="movie-rating">★ ${movie.rating.toFixed(1)}</div>
+                <button class="movie-button" data-movie='${JSON.stringify(movie)}'>Details</button>
+            `;
+            
+            slide.appendChild(info);
+            swiperWrapper.appendChild(slide);
+        });
+
+        // Initialize Swiper
+        const swiper = new Swiper('.swiper-container', {
+            effect: 'coverflow',
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: 'auto',
+            coverflowEffect: {
+                rotate: 50,
+                stretch: 0,
+                depth: 100,
+                modifier: 1,
+                slideShadows: true,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        // Populate upcoming movies
+        const upcomingMoviesContainer = document.querySelector('#upcoming-movies .movie-grid');
+        movieData.upcoming.forEach(movie => {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            card.innerHTML = `
+                <img src="${movie.image}" alt="${movie.title}">
+                <div class="movie-card-info">
+                    <h3 class="movie-card-title">${movie.title}</h3>
+                    <p>Release Date: ${movie.releaseDate}</p>
+                </div>
+            `;
+            card.addEventListener('click', () => openPopup(movie));
+            upcomingMoviesContainer.appendChild(card);
+        });
+
+        // Populate top rated movies
+        const topRatedMoviesContainer = document.querySelector('#top-rated .movie-grid');
+        movieData.topRated.forEach(movie => {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            card.innerHTML = `
+                <img src="${movie.image}" alt="${movie.title}">
+                <div class="movie-card-info">
+                    <h3 class="movie-card-title">${movie.title}</h3>
+                    <div class="movie-card-rating">★ ${movie.rating.toFixed(1)}</div>
+                </div>
+            `;
+            card.addEventListener('click', () => openPopup(movie));
+            topRatedMoviesContainer.appendChild(card);
+        });
+
+        // Movie details popup functionality
+        const movieDetails = document.getElementById('movie-details');
+        const closePopup = document.querySelector('.close-button');
+        const popupTitle = document.getElementById('movie-title');
+        const popupDirector = document.getElementById('movie-director');
+        const popupYear = document.getElementById('movie-year');
+        const popupGenre = document.getElementById('movie-genre');
+        const popupPlot = document.getElementById('movie-plot');
+        const popupCast = document.getElementById('movie-cast');
+        const popupRating = document.getElementById('movie-rating');
+        const popupDuration = document.getElementById('movie-duration');
+        const popupPlay = document.getElementById('movie-play');
+        const popupTrailer = document.getElementById('movie-trailer');
+
+        function openPopup(movie) {
+            popupTitle.textContent = movie.title;
+            popupDirector.textContent = `Director: ${movie.director}`;
+            popupYear.textContent = `Year: ${movie.year || 'TBA'}`;
+            popupGenre.textContent = `Genre: ${movie.genre ? movie.genre.join(', ') : 'N/A'}`;
+            popupPlot.textContent = `Plot: ${movie.plot}`;
+            popupCast.textContent = `Cast: ${movie.cast ? movie.cast.join(', ') : 'N/A'}`;
+            popupRating.textContent = `Rating: ${movie.rating || 'N/A'}`;
+            popupDuration.textContent = `Duration: ${movie.duration || 'N/A'}`;
+            
+            if (movie.play) {
+                popupPlay.href = movie.play;
+                popupPlay.style.display = 'inline-block';
+            } else {
+                popupPlay.style.display = 'none';
+            }
+            
+            if (movie.trailer) {
+                popupTrailer.href = movie.trailer;
+                popupTrailer.style.display = 'inline-block';
+            } else {
+                popupTrailer.style.display = 'none';
+            }
+            
+            movieDetails.style.display = 'block';
+        }
+
+        document.querySelectorAll('.movie-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const movieData = JSON.parse(button.getAttribute('data-movie'));
+                openPopup(movieData);
+            });
+        });
+
+        closePopup.addEventListener('click', () => {
+            movieDetails.style.display = 'none';
+        });
+
+        // Animate title
+        anime({
+            targets: '.title',
+            translateY: [-50, 0],
+            opacity: [0, 1],
+            easing: 'easeOutExpo',
+            duration: 1500
+        });
+
+        // Add glowing effect to active slide
+        const addGlowingEffect = () => {
+            anime({
+                targets: '.swiper-slide-active',
+                boxShadow: [
+                    { value: '0 0 20px rgba(255, 255, 255, 0.3)' },
+                    { value: '0 0 40px rgba(255, 255, 255, 0.6)' },
+                    { value: '0 0 20px rgba(255, 255, 255, 0.3)' }
+                ],
+                duration: 1500,
+                easing: 'easeInOutQuad',
+                loop: true
+            });
+        };
+
+        // Mobile menu functionality
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const mobileMenu = document.querySelector('.mobile-menu');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenuToggle.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+                mobileMenuToggle.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+
+        const performSearch = () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const movieSlides = document.querySelectorAll('.swiper-slide');
+
+            movieSlides.forEach(slide => {
+                const movieTitle = slide.querySelector('.movie-title').textContent.toLowerCase();
+                if (movieTitle.includes(searchTerm)) {
+                    slide.style.display = 'block';
+                } else {
+                    slide.style.display = 'none';
+                }
+            });
+
+            swiper.update();
+        };
+
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Newsletter form submission
+        const newsletterForm = document.getElementById('newsletter-form');
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = newsletterForm.querySelector('input[type="email"]').value;
+            alert(`Thank you for subscribing with email: ${email}`);
+            newsletterForm.reset();
+        });
+
+        // Initialize the application
+        const init = () => {
+            addGlowingEffect();
+        };
+
+        init();
+    </script>
+</body>
+</html>
+
