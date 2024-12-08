@@ -6,6 +6,8 @@
     <title>CineMagic - Your Ultimate Movie Destination</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
@@ -287,16 +289,55 @@ body {
     backdrop-filter: blur(5px);
 }
 
+/* General modal styling */
 .modal-content {
-    background-color: rgba(18, 18, 18, 0.95);
-    margin: 10% auto;
+    display: flex;
+    flex-wrap: nowrap; /* Ensure content stays in a single row */
+    gap: 20px;         /* Add space between image and details */
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
+    background: linear-gradient(145deg, #121212, #1f1f1f);
+    color: #fff;
     border-radius: 10px;
-    position: relative;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    max-width: 80%;    /* Limit the popup width */
+    margin: auto;
 }
+
+/* Image section */
+.modal-img {
+    flex: 1;           /* Take up 1 part of the available space */
+    max-width: 40%;    /* Limit the image width */
+}
+
+.modal-img img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Details section */
+.modal-details {
+    flex: 2;           /* Take up 2 parts of the available space */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;         /* Space between details */
+}
+
+/* Responsive for Mobile */
+@media (max-width: 768px) {
+    .modal-content {
+        flex-direction: column; /* Stack image and details vertically */
+        gap: 10px;
+        max-width: 95%;         /* Adjust width for mobile */
+    }
+
+    .modal-img {
+        display: none;          /* Hide image on mobile */
+    }
+}
+
+
 
 .close-button {
     color: #aaa;
@@ -327,6 +368,7 @@ body {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     overflow: hidden;
+    height: 395px;
     transition: transform 0.3s ease;
     cursor: pointer;
 }
@@ -339,6 +381,11 @@ body {
     width: 100%;
     height: 300px;
     object-fit: cover;
+}
+@media (max-width: 768px) {
+    .movie-card {
+        height: 398px; /* Adjust height for smaller screens */
+    }
 }
 
 .movie-card-info {
@@ -566,21 +613,27 @@ footer {
     </main>
     <div id="movie-details" class="modal">
         <div class="modal-content">
-            <button class="close-button">&times;</button>
-            <h2 id="movie-title"></h2>
-            <p id="movie-director"></p>
-            <p id="movie-year"></p>
-            <p id="movie-genre"></p>
-            <p id="movie-plot"></p>
-            <p id="movie-cast"></p>
-            <p id="movie-rating"></p>
-            <p id="movie-duration"></p>
-            <div class="popup-buttons">
-                <a id="movie-play" href="#" target="_blank" class="movie-button">Play</a>
-                <a id="movie-trailer" href="#" target="_blank" class="movie-button">Watch Trailer</a>
+            <div class="modal-img">
+                <img id="movie-image" src="" alt="Movie Poster">
+            </div>
+            <div class="modal-details">
+                <button class="close-button">&times;</button>
+                <h2 id="movie-title"></h2>
+                <p id="movie-director"></p>
+                <p id="movie-year"></p>
+                <p id="movie-genre"></p>
+                <p id="movie-plot"></p>
+                <p id="movie-cast"></p>
+                <p id="movie-rating"></p>
+                <p id="movie-duration"></p>
+                <div class="popup-buttons">
+                    <a id="movie-play" href="#" target="_blank" class="movie-button">Play</a>
+                    <a id="movie-trailer" href="#" target="_blank" class="movie-button">Watch Trailer</a>
+                </div>
             </div>
         </div>
     </div>
+    
 
     <footer>
         <div class="social-icons">
@@ -603,6 +656,9 @@ footer {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         // Initialize Vanta.js clouds effect
 VANTA.CLOUDS({
@@ -623,7 +679,7 @@ VANTA.CLOUDS({
 // Fetch movie data and populate sections
 const movieData = {
     current: [
-        { title: "The Avengers: Endgame", image: "https://via.placeholder.com/300x450", rating: 9.2, director: "Anthony Russo, Joe Russo", year: 2019, genre: ["Action", "Adventure", "Drama"], plot: "After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.", cast: ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo"], duration: "3h 1min", trailer: "https://www.youtube.com/watch?v=TcMBFSGVi1c", play: "movie1.html" },
+        { title: "The Avengers: Endgame", image: "https://via.placeholder.com/300x450", rating: 9.2, director: "Anthony Russo, Joe Russo", year: 2019, genre: ["Action", "Adventure", "Drama"], plot: "After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.", cast: ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo"], duration: "3h 1min", trailer: "https://www.youtube.com/watch?v=TcMBFSGVi1c", play: "old.html" },
         { title: "Inception", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "Christopher Nolan", year: 2010, genre: ["Action", "Adventure", "Sci-Fi"], plot: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"], duration: "2h 28min", trailer: "https://www.youtube.com/watch?v=YoHD9XEInc0", play: "movie2.html" },
         { title: "The Avengers: Endgame", image: "https://via.placeholder.com/300x450", rating: 9.2, director: "Anthony Russo, Joe Russo", year: 2019, genre: ["Action", "Adventure", "Drama"], plot: "After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.", cast: ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo"], duration: "3h 1min", trailer: "https://www.youtube.com/watch?v=TcMBFSGVi1c", play: "movie1.html" },
         { title: "Inception", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "Christopher Nolan", year: 2010, genre: ["Action", "Adventure", "Sci-Fi"], plot: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"], duration: "2h 28min", trailer: "https://www.youtube.com/watch?v=YoHD9XEInc0", play: "movie2.html" }
@@ -676,13 +732,20 @@ const populateSwiper = () => {
             <div class="movie-info">
                 <h3 class="movie-title">${movie.title}</h3>
                 <div class="movie-rating">★ ${movie.rating.toFixed(1)}</div>
-                <button class="movie-button" data-movie='${JSON.stringify(movie)}'>Details</button>
+                <button class="movie-button">Details</button>
             </div>
         `;
+
+        // Bind click event to the Details button
+        slide.querySelector('.movie-button').addEventListener('click', () => {
+            openPopup(movie); // Pass the movie object to the openPopup function
+        });
+
         swiperWrapper.appendChild(slide);
         lazyLoad(slide.querySelector('img'));
     });
 };
+
 
 // Initialize Swiper
 const initSwiper = () => {
@@ -743,31 +806,36 @@ const popupPlay = document.getElementById('movie-play');
 const popupTrailer = document.getElementById('movie-trailer');
 
 const openPopup = (movie) => {
-    popupTitle.textContent = movie.title;
-    popupDirector.textContent = `Director: ${movie.director}`;
-    popupYear.textContent = `Year: ${movie.year || 'TBA'}`;
-    popupGenre.textContent = `Genre: ${movie.genre ? movie.genre.join(', ') : 'N/A'}`;
-    popupPlot.textContent = `Plot: ${movie.plot}`;
-    popupCast.textContent = `Cast: ${movie.cast ? movie.cast.join(', ') : 'N/A'}`;
-    popupRating.textContent = `Rating: ${movie.rating || 'N/A'}`;
-    popupDuration.textContent = `Duration: ${movie.duration || 'N/A'}`;
+    const popupImage = document.getElementById('movie-image');
+    popupImage.src = movie.image;
+    popupImage.alt = movie.title;
+
+    document.getElementById('movie-title').textContent = movie.title;
+    document.getElementById('movie-director').textContent = `Director: ${movie.director}`;
+    document.getElementById('movie-year').textContent = `Year: ${movie.year || 'TBA'}`;
+    document.getElementById('movie-genre').textContent = `Genre: ${movie.genre ? movie.genre.join(', ') : 'N/A'}`;
+    document.getElementById('movie-plot').textContent = `Plot: ${movie.plot}`;
+    document.getElementById('movie-cast').textContent = `Cast: ${movie.cast ? movie.cast.join(', ') : 'N/A'}`;
+    document.getElementById('movie-rating').textContent = `Rating: ${movie.rating || 'N/A'}`;
+    document.getElementById('movie-duration').textContent = `Duration: ${movie.duration || 'N/A'}`;
     
     if (movie.play) {
-        popupPlay.href = movie.play;
-        popupPlay.style.display = 'inline-block';
+        document.getElementById('movie-play').href = movie.play;
+        document.getElementById('movie-play').style.display = 'inline-block';
     } else {
-        popupPlay.style.display = 'none';
+        document.getElementById('movie-play').style.display = 'none';
     }
-    
+
     if (movie.trailer) {
-        popupTrailer.href = movie.trailer;
-        popupTrailer.style.display = 'inline-block';
+        document.getElementById('movie-trailer').href = movie.trailer;
+        document.getElementById('movie-trailer').style.display = 'inline-block';
     } else {
-        popupTrailer.style.display = 'none';
+        document.getElementById('movie-trailer').style.display = 'none';
     }
     
-    movieDetails.style.display = 'block';
+    document.getElementById('movie-details').style.display = 'block';
 };
+
 
 closePopup.addEventListener('click', () => {
     movieDetails.style.display = 'none';
@@ -815,33 +883,152 @@ document.addEventListener('click', (event) => {
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
 
+// Fuse.js options
+const options = {
+    keys: ['title'], // Searchable fields
+    threshold: 0.4,  // Controls fuzziness; lower is stricter
+};
+
+// Initialize Fuse.js with movie data
+const fuse = new Fuse(movieData.current, options);
+
+// Fuse.js enhanced search
 const performSearch = _.debounce(() => {
-    const searchTerm = searchInput.value.toLowerCase();
-    const movieSlides = document.querySelectorAll('.swiper-slide');
+    const searchTerm = searchInput.value.trim();
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
 
-    movieSlides.forEach(slide => {
-        const movieTitle = slide.querySelector('.movie-title').textContent.toLowerCase();
-        if (movieTitle.includes(searchTerm)) {
-            slide.style.display = 'block';
+    if (searchTerm) {
+        // Perform fuzzy search
+        const results = fuse.search(searchTerm);
+
+        // Clear existing movie slides
+        swiperWrapper.innerHTML = '';
+
+        if (results.length > 0) {
+            // Populate Swiper with search results
+            results.forEach(({ item }) => {
+                const slide = document.createElement('div');
+                slide.className = 'swiper-slide';
+                slide.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="movie-info">
+                        <h3 class="movie-title">${item.title}</h3>
+                        <div class="movie-rating">★ ${item.rating.toFixed(1)}</div>
+                        <button class="movie-button" data-movie='${JSON.stringify(item)}'>Details</button>
+                    </div>
+                `;
+
+                // Add event listener to the Details button
+                slide.querySelector('.movie-button').addEventListener('click', () => openPopup(item));
+
+                swiperWrapper.appendChild(slide);
+            });
+
+            swiper.update(); // Refresh Swiper
         } else {
-            slide.style.display = 'none';
+            // Display a "No results found" message if no matches
+            swiperWrapper.innerHTML = '<p style="color: white; text-align: center;">No movies found!</p>';
         }
-    });
-
-    swiper.update();
+    } else {
+        // Reset to show all movies if search is cleared
+        swiperWrapper.innerHTML = '';
+        populateSwiper();
+        swiper.update();
+    }
 }, 300);
 
+// Attach event listeners
 searchButton.addEventListener('click', performSearch);
-searchInput.addEventListener('input', performSearch);
+searchInput.addEventListener('input', performSearch); // Real-time search as user types
 
-// Newsletter form submission
-const newsletterForm = document.getElementById('newsletter-form');
-newsletterForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = newsletterForm.querySelector('input[type="email"]').value;
-    alert(`Thank you for subscribing with email: ${email}`);
-    newsletterForm.reset();
-});
+
+//handle newsletters data
+document.addEventListener('DOMContentLoaded', async () => {
+    const newsletterForm = document.getElementById('newsletter-form');
+    
+    if (!newsletterForm) {
+      console.error('Newsletter form not found in DOM');
+      return;
+    }
+  
+    newsletterForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+  
+      try {
+        const email = newsletterForm.querySelector('input[type="email"]').value;
+  
+        if (!email) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Missing Email',
+            text: 'Please provide a valid email address.',
+          });
+          return;
+        }
+  
+        // Fetch the user's IP
+        const ipResponse = await fetch('https://api64.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        const userIp = ipData?.ip || 'Unknown IP';
+  
+        // Fetch user's approximate location
+        const locationResponse = await fetch(`https://ipapi.co/${userIp}/json/`);
+        const locationData = await locationResponse.json();
+        const userLocation = locationData?.city || 'Unknown location';
+  
+        console.log('Payload before sending:', [
+          {
+            ip: userIp,
+            location: userLocation,
+            email,
+          }
+        ]);
+  
+        const response = await fetch('https://api.steinhq.com/v1/storages/67555ecec088333365588952/sheet1', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify([
+            {
+              ip: userIp,
+              location: userLocation,
+              email,
+            },
+          ]),
+        });
+  
+        const result = await response.json();
+        console.log('Response from endpoint:', result);
+  
+        // Fix logic: Check for updatedRange or similar server success response
+        if (response.ok && result?.updatedRange) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Thank you for subscribing!',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed!',
+            text: 'Unable to submit your data.',
+          });
+        }
+      } catch (error) {
+        console.error('Error submitting data:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Something went wrong. Please try again later.',
+        });
+      }
+  
+      newsletterForm.reset();
+    });
+  });
+  
+  
+
+
 
 // Initialize the application
 const init = () => {
