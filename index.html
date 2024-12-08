@@ -112,11 +112,15 @@ body {
     background-position: center;
     background-size: cover;
     width: 300px;
-    height: 450px;
+    height: 380px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     transition: transform 0.3s ease;
     overflow: hidden;
+}
+.swiper-slide img {
+    width: 100%;
+    height:100%;
 }
 
 .swiper-slide:hover {
@@ -147,6 +151,7 @@ body {
     font-size: 1.2rem;
     margin-bottom: 5px;
     font-weight: bold;
+    transition: color 0.3s ease;
 }
 
 .movie-rating {
@@ -329,7 +334,7 @@ body {
     .modal-content {
         flex-direction: column; /* Stack image and details vertically */
         gap: 10px;
-        max-width: 95%;         /* Adjust width for mobile */
+        max-width: 95%;       /* Adjust width for mobile */
     }
 
     .modal-img {
@@ -384,7 +389,7 @@ body {
 }
 @media (max-width: 768px) {
     .movie-card {
-        height: 398px; /* Adjust height for smaller screens */
+        height: 348px; /* Adjust height for smaller screens */
     }
 }
 
@@ -394,7 +399,7 @@ body {
 
 .movie-card-title {
     font-size: 1rem;
-    color: #fff;
+    color: #000000;
     margin-bottom: 5px;
 }
 
@@ -415,7 +420,7 @@ body {
     border: none;
     border-radius: 25px;
     background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    color: #807d7d;
     font-size: 16px;
 }
 
@@ -576,7 +581,7 @@ footer {
         <section id="current-movies" class="movie-section">
             <h1 class="title" style="color:black;">Current Movies</h1>
             <div id="search-container">
-                <input type="text" id="search-input" placeholder="Search movies...">
+                <input type="text" id="search-input" placeholder="Search movies..." style="color: #5d2bbb; font-weight: bold; border:2px solid rgb(95, 94, 94)">
                 <button id="search-button">Search</button>
             </div>
             <div class="swiper-container">
@@ -590,14 +595,14 @@ footer {
         </section>
 
         <section id="upcoming-movies" class="movie-section">
-            <h2 class="title">Upcoming Movies</h2>
+            <h2 class="title" style="color: #000000;">Upcoming Movies</h2>
             <div class="movie-grid">
                 <!-- Upcoming movie cards will be dynamically added here -->
             </div>
         </section>
 
         <section id="top-rated" class="movie-section">
-            <h2 class="title">Top Rated Movies</h2>
+            <h2 class="title" style="color: #000000;">Top Rated Movies</h2>
             <div class="movie-grid">
                 <!-- Top rated movie cards will be dynamically added here -->
             </div>
@@ -605,7 +610,7 @@ footer {
 
         <section id="newsletter">
             <form id="newsletter-form">
-                <h3>Subscribe to Our Newsletter</h3>
+                <h3 style="color: #3f51b5;">Subscribe to Our Newsletter</h3>
                 <input type="email" placeholder="Enter your email" required>
                 <button type="submit">Subscribe</button>
             </form>
@@ -642,10 +647,10 @@ footer {
             <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
         </div>
         <div class="footer-links">
-            <a href="about.html">About Us</a>
-            <a href="policy.html">Privacy Policy</a>
-            <a href="term.html">Terms of Service</a>
-            <a href="contact.html">Contact Us</a>
+            <a href="#">About Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact Us</a>
         </div>
         <p>&copy; 2023 CineMagic. All rights reserved.</p>
     </footer>
@@ -679,11 +684,11 @@ VANTA.CLOUDS({
 // Fetch movie data and populate sections
 const movieData = {
     current: [
-        { title: "The Avengers: Endgame", image: "https://via.placeholder.com/300x450", rating: 9.2, director: "Anthony Russo, Joe Russo", year: 2019, genre: ["Action", "Adventure", "Drama"], plot: "After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.", cast: ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo"], duration: "3h 1min", trailer: "https://www.youtube.com/watch?v=TcMBFSGVi1c", play: "old.html" },
-        { title: "Inception", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "Christopher Nolan", year: 2010, genre: ["Action", "Adventure", "Sci-Fi"], plot: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"], duration: "2h 28min", trailer: "https://www.youtube.com/watch?v=YoHD9XEInc0", play: "movie2.html" },
-        { title: "The Avengers: Endgame", image: "https://via.placeholder.com/300x450", rating: 9.2, director: "Anthony Russo, Joe Russo", year: 2019, genre: ["Action", "Adventure", "Drama"], plot: "After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.", cast: ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo"], duration: "3h 1min", trailer: "https://www.youtube.com/watch?v=TcMBFSGVi1c", play: "movie1.html" },
-        { title: "Inception", image: "https://via.placeholder.com/300x450", rating: 8.8, director: "Christopher Nolan", year: 2010, genre: ["Action", "Adventure", "Sci-Fi"], plot: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"], duration: "2h 28min", trailer: "https://www.youtube.com/watch?v=YoHD9XEInc0", play: "movie2.html" }
-        // ... (add more movies)
+        { title: "Hanu-Man", image: "https://upload.wikimedia.org/wikipedia/en/thumb/b/bb/Hanu_Man_film_Release_poster.jpeg/220px-Hanu_Man_film_Release_poster.jpeg", rating: 7.8, director: "	Prasanth Varma", year: 2024, genre: ["Action", "Adventure", "Drama"], plot: "In 1998 Saurashtra, in Akhanda Bharath a young Michael, obsessed with superheroes, attempts to fly but is stopped by his father.", cast: ["Teja Sajja","Amritha Aiyer"], duration: "3h 1min", trailer: "https://youtu.be/Oqvly3MvlXA?si=T9jXYWodpnuwhWZg", play: "" },
+        { title: "Devara: Part 1", image: "https://upload.wikimedia.org/wikipedia/en/f/f0/Devara_Part_1.jpg", rating: 6.1, director: "	Koratala Siva", year: 2024, genre: ["Action", "Sea Adventure", "Drama"], plot: "In 1996, a high-level meeting is held concerning security threats to the 1996 Cricket World Cup in India from arms dealer Daya and his brother, Yethi.", cast: ["NTR","Janhvi Kapoor"], duration: "2h 58m", trailer: "https://youtu.be/HNYA6bqL6bU?si=PR2E_q_tGAY4BvqY", play: "" },
+        { title: "Kalki 2898 AD", image: "https://upload.wikimedia.org/wikipedia/en/4/4c/Kalki_2898_AD.jpg", rating: 9.2, director: "Nag Ashwin", year: 2024, genre: ["Action", "Adventure", "Drama"], plot: "Following the Kurukshetra War, Ashwatthama attempts to kill Uttarā's unborn child. For committing the act, Krishna, the 8th avatar of Vishnu, curses him to roam the earth as an immortal and witness humanity's misery as a result of societal and moral deterioration during the Kali Yuga. ", cast: [	"Amitabh Bachchan","Kamal Haasan","Prabhas","Deepika Padukone"], duration: "3h 1min", trailer: "https://youtu.be/y1-w1kUGuz8?si=piSb7-d09wgu7JxS", play: "kalki-p.html" },
+        { title: "Pushpa 2: The Rule", image: "https://upload.wikimedia.org/wikipedia/en/thumb/1/11/Pushpa_2-_The_Rule.jpg/220px-Pushpa_2-_The_Rule.jpg", rating: 6.8, director: "	Sukumar", year: 2024, genre: ["Action", "Crime", "Action Epic","Drama"], plot: "A consignment of red sandalwood arrives at the Yokohama port in Japan, where workers are shocked to find Pushpa hidden inside one of the containers", cast: ["Allu Arjun","Rashmika Mandanna","Fahadh Faasil"], duration: "3h 15min", trailer: "", play: "" }
+        // ... 
     ],
     upcoming: [
         { title: "Dune: Part Two", image: "https://via.placeholder.com/300x450", releaseDate: "October 20, 2023", director: "Denis Villeneuve", plot: "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.", trailer: "https://www.youtube.com/watch?v=dummy-dune-2" },
@@ -704,7 +709,6 @@ const movieData = {
         // ... (add more movies)
     ]
 };
-
 // Lazy loading function
 const lazyLoad = (target) => {
     const io = new IntersectionObserver((entries, observer) => {
